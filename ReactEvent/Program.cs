@@ -13,11 +13,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 	options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
 
+builder.Services.AddCors(options =>
+{
+	options.AddPolicy("myReact",
+					  policy =>
+					  {
+						  policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+					  });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
 //app.UseHttpsRedirection();
+app.UseCors("myReact");
 
 app.UseAuthorization();
 app.MapControllers();
