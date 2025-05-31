@@ -1,4 +1,5 @@
 ﻿using Application.Activities.Queries;
+using Application.Core;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 
@@ -27,6 +28,8 @@ namespace ReactEvent.Extentions
 			{
 				cfg.RegisterServicesFromAssemblyContaining<GetActivityList.Handler>();
 			});
+
+			services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
 			return services;
 		}

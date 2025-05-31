@@ -1,22 +1,42 @@
-﻿using Application.Activities.Queries;
+﻿using Application.Activities.Commands;
+using Application.Activities.Queries;
 using Domain;
-using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ReactEvent.Controllers
 {
-	public class ActivitiesController(IMediator _mediator) : BaseApiController
+	public class ActivitiesController() : BaseApiController
 	{
 		[HttpGet]
 		public async Task<ActionResult<List<Activity>>> GetActivities()
 		{
-			return await _mediator.Send(new GetActivityList.Query());
+			return await Mediator.Send(new GetActivityList.Query());
 		}
 
 		[HttpGet("{id}")]
 		public async Task<ActionResult<Activity>> GetActivity(string id)
 		{
-			return await _mediator.Send(new ActivityDetails.Query { Id = id });
+			return await Mediator.Send(new ActivityDetails.Query { Id = id });
+		}
+
+		[HttpPost]
+		public async Task<ActionResult<String>> CreateActivity(Activity activity)
+		{
+			return await Mediator.Send(new CreateActivity.Command { Activity = activity });
+		}
+
+		[HttpPut]
+		public async Task<ActionResult> EditActivity(Activity activity)
+		{
+			await Mediator.Send(new EditActivity.Command { Activity = activity });
+			return NoContent();
+		}
+
+		[HttpDelete("{id}")]
+		public async Task<ActionResult> DeleteActivity(string id)
+		{
+				await Mediator.Send(new DeleteActivity.Command { Id = id });
+			return Ok();
 		}
 	}
 }
