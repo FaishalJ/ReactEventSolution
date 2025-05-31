@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
+﻿
 namespace ReactEvent.Controllers
 {
 	[Route("api/[controller]")]
