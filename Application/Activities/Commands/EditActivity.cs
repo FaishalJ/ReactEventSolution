@@ -18,7 +18,6 @@ namespace Application.Activities.Commands
 			{
 				var activity = await _context.Activities.FindAsync(request.Activity.Id, cancellationToken) ?? throw new Exception("Activity not found");
 				_mapper.Map(request.Activity, activity);
-				_context.Remove(activity); // This line is not needed, as we are updating the existing activity
 				await _context.SaveChangesAsync(cancellationToken);
 			}
 		}
