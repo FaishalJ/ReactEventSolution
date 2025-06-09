@@ -1,7 +1,11 @@
 ﻿using Application.Activities.Queries;
+using Application.Activities.Validators;
 using Application.Core;
+using FluentValidation;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
+using ReactEvent.Middleware;
 
 namespace ReactEvent.Extentions
 {
@@ -27,9 +31,12 @@ namespace ReactEvent.Extentions
 			services.AddMediatR(cfg =>
 			{
 				cfg.RegisterServicesFromAssemblyContaining<GetActivityList.Handler>();
+				cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
 			});
 
 			services.AddAutoMapper(typeof(MappingProfiles).Assembly);
+			services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
+			services.AddTransient<ExceptionMiddleware>();
 
 			return services;
 		}
