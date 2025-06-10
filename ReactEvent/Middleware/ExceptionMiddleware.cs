@@ -1,10 +1,12 @@
 ﻿
+using Application.Core;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace ReactEvent.Middleware
 {
-	public class ExceptionMiddleware(ILogger<ExceptionMiddleware> _logger) : IMiddleware
+	public class ExceptionMiddleware(ILogger<ExceptionMiddleware> _logger, IHostEnvironment env) : IMiddleware
 	{
 		public async Task InvokeAsync(HttpContext context, RequestDelegate next)
 		{
@@ -18,11 +20,24 @@ namespace ReactEvent.Middleware
 			}
 			catch (Exception ex)
 			{
-				_logger.LogError(ex, "An unexpected error occurred");
-
-				context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-				context.Response.ContentType = "application/json";
+				await HandleExeption(context, ex);
 			}
+		}
+
+		private async Task HandleExeption(HttpContext context, Exception ex)
+		{
+			_logger.LogError(ex, ex.Message);
+			context.Response.ContentType = "application/json";
+			context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+			var response = env.IsDevelopment() ? new AppException(StatusCodes.Status500InternalServerError, ex.Message, ex.StackTrace) :
+				new AppException(StatusCodes.Status500InternalServerError, ex.Message, null);
+			var options = new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+			};
+			var json = JsonSerializer.Serialize(response, options);
+			await context.Response.WriteAsync(json);
 		}
 
 		private static async Task HandleValidationExeption(HttpContext context, ValidationException ex)
