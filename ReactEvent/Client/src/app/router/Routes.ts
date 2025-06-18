@@ -1,4 +1,5 @@
 import { createBrowserRouter } from "react-router";
+
 import App from "../layout/App";
 import HomePage from "../../features/home/HomePage";
 import ActivityDashboard from "../../features/activities/dashboard/ActivityDashboard";

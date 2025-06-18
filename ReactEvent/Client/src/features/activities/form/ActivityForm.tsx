@@ -1,35 +1,36 @@
-import { Box, Button, Paper, TextField, Typography } from "@mui/material";
+import { useForm } from "react-hook-form";
+import { Box, Button, Paper, Typography } from "@mui/material";
 import { useActivities } from "../../../lib/hooks/useActivities";
-import { useNavigate, useParams } from "react-router";
+import { useParams } from "react-router";
+import { useEffect } from "react";
+import {
+  activitySchema,
+  type TActivitySchema,
+} from "../../../lib/schemas/activitySchema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import TextInput from "../../../app/shared/components/TextInput";
 
 export default function ActivityForm() {
   const { id } = useParams();
   const { updateActivity, createActivity, activity, isLoadingActivity } =
     useActivities(id);
-  const navigate = useNavigate();
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const { control, reset, handleSubmit } = useForm<TActivitySchema>({
+    mode: "onTouched",
+    resolver: zodResolver(activitySchema),
+  });
 
-    const formData = new FormData(e.currentTarget);
+  useEffect(
+    function () {
+      if (activity) {
+        reset(activity);
+      }
+    },
+    [activity, reset]
+  );
 
-    const data: { [key: string]: FormDataEntryValue } = {};
-
-    formData.forEach((value, key) => {
-      data[key] = value;
-    });
-
-    if (activity) {
-      data.id = activity.id;
-      await updateActivity.mutateAsync(data as unknown as TActivity);
-      navigate(`/activities/${activity.id}`);
-    } else {
-      createActivity.mutate(data as unknown as TActivity, {
-        onSuccess: (id) => {
-          navigate(`/activities/${id}`);
-        },
-      });
-    }
+  const onSubmit = (data: TActivitySchema) => {
+    console.log(data);
   };
 
   if (isLoadingActivity) return <Typography>Loading...</Typography>;
@@ -42,36 +43,23 @@ export default function ActivityForm() {
 
       <Box
         component="form"
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit(onSubmit)}
         display="flex"
         flexDirection="column"
         gap={3}
       >
-        <TextField label="Title" name="title" defaultValue={activity?.title} />
-        <TextField
+        <TextInput label="Title" control={control} name="title" />
+        <TextInput
           label="Description"
+          control={control}
           name="description"
-          defaultValue={activity?.description}
           multiline
           rows={3}
         />
-        <TextField
-          label="Category"
-          name="category"
-          defaultValue={activity?.category}
-        />
-        <TextField
-          label="Date"
-          name="date"
-          defaultValue={
-            activity?.date
-              ? new Date(activity.date).toISOString().split("T")[0]
-              : new Date().toISOString().split("T")[0]
-          }
-          type="date"
-        />
-        <TextField label="City" name="city" defaultValue={activity?.city} />
-        <TextField label="Venue" name="venue" defaultValue={activity?.venue} />
+        <TextInput label="Category" control={control} name="category" />
+        <TextInput label="Date" control={control} name="date" />
+        <TextInput label="City" control={control} name="city" />
+        <TextInput label="Venue" control={control} name="venue" />
 
         <Box display="flex" gap={3} justifyContent="end">
           <Button color="inherit">Cancel</Button>
