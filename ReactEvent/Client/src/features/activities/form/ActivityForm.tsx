@@ -1,14 +1,19 @@
-import { useForm } from "react-hook-form";
-import { Box, Button, Paper, Typography } from "@mui/material";
-import { useActivities } from "../../../lib/hooks/useActivities";
-import { useParams } from "react-router";
 import { useEffect } from "react";
+import { useParams } from "react-router";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Box, Button, Paper, Typography } from "@mui/material";
+
+import TextInput from "../../../app/shared/components/TextInput";
+import SelectInput from "../../../app/shared/components/SelectInput";
+
+import { useActivities } from "../../../lib/hooks/useActivities";
 import {
   activitySchema,
   type TActivitySchema,
 } from "../../../lib/schemas/activitySchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import TextInput from "../../../app/shared/components/TextInput";
+import { categoryOptions } from "./categoryOptions";
+import DateTimeInput from "../../../app/shared/components/DateTimeInput";
 
 export default function ActivityForm() {
   const { id } = useParams();
@@ -56,8 +61,13 @@ export default function ActivityForm() {
           multiline
           rows={3}
         />
-        <TextInput label="Category" control={control} name="category" />
-        <TextInput label="Date" control={control} name="date" />
+        <SelectInput
+          label="Category"
+          control={control}
+          name="category"
+          items={categoryOptions}
+        />
+        <DateTimeInput label="Date" control={control} name="date" />
         <TextInput label="City" control={control} name="city" />
         <TextInput label="Venue" control={control} name="venue" />
 
