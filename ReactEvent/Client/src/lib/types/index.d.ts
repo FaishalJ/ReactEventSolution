@@ -32,7 +32,9 @@ declare type TLocationIQAddress = {
   road?: string;
   neighbourhood?: string;
   suburb?: string;
-  city: string;
+  city?: string;
+  town?: string;
+  village?: string;
   county: string;
   state: string;
   postcode: string;

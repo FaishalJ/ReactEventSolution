@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useParams } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Button, Paper, Typography } from "@mui/material";
@@ -14,9 +14,11 @@ import {
 } from "../../../lib/schemas/activitySchema";
 import { categoryOptions } from "./categoryOptions";
 import DateTimeInput from "../../../app/shared/components/DateTimeInput";
+import LocationInput from "../../../app/shared/components/LocationInput";
 
 export default function ActivityForm() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const { updateActivity, createActivity, activity, isLoadingActivity } =
     useActivities(id);
 
@@ -28,14 +30,39 @@ export default function ActivityForm() {
   useEffect(
     function () {
       if (activity) {
-        reset(activity);
+        reset({
+          ...activity,
+          location: {
+            city: activity.city,
+            venue: activity.venue,
+            latitude: activity.latitude,
+            longitude: activity.longitude,
+          },
+        });
       }
     },
     [activity, reset]
   );
 
   const onSubmit = (data: TActivitySchema) => {
-    console.log(data);
+    const { location, ...rest } = data;
+    const flattenedData = { ...rest, ...location } as TActivity;
+    try {
+      if (activity) {
+        updateActivity.mutate(
+          { ...activity, ...flattenedData },
+          {
+            onSuccess: () => navigate(`/activities/${activity.id}`),
+          }
+        );
+      } else {
+        createActivity.mutate(flattenedData, {
+          onSuccess: (id) => navigate(`/activities/${id}`),
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   if (isLoadingActivity) return <Typography>Loading...</Typography>;
@@ -61,15 +88,22 @@ export default function ActivityForm() {
           multiline
           rows={3}
         />
-        <SelectInput
-          label="Category"
+
+        <Box display="flex" gap={3}>
+          <SelectInput
+            label="Category"
+            control={control}
+            name="category"
+            items={categoryOptions}
+          />
+          <DateTimeInput label="Date" control={control} name="date" />
+        </Box>
+
+        <LocationInput
           control={control}
-          name="category"
-          items={categoryOptions}
+          name="location"
+          label="Enter the location"
         />
-        <DateTimeInput label="Date" control={control} name="date" />
-        <TextInput label="City" control={control} name="city" />
-        <TextInput label="Venue" control={control} name="venue" />
 
         <Box display="flex" gap={3} justifyContent="end">
           <Button color="inherit">Cancel</Button>
