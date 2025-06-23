@@ -2,6 +2,7 @@
 using Application.Activities.DTO;
 using Application.Activities.Queries;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ReactEvent.Controllers

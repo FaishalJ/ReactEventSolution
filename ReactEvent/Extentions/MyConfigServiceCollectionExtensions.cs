@@ -1,8 +1,10 @@
 ﻿using Application.Activities.Queries;
 using Application.Activities.Validators;
 using Application.Core;
+using Domain;
 using FluentValidation;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
 using ReactEvent.Middleware;
@@ -24,7 +26,7 @@ namespace ReactEvent.Extentions
 				options.AddPolicy("myReact",
 								  policy =>
 								  {
-									  policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod();
+									  policy.WithOrigins("http://localhost:3000").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
 								  });
 			});
 
@@ -37,6 +39,12 @@ namespace ReactEvent.Extentions
 			services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 			services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
 			services.AddTransient<ExceptionMiddleware>();
+
+			services.AddIdentityApiEndpoints<User>(opt =>
+			{
+				opt.User.RequireUniqueEmail = true;
+			}).AddRoles<IdentityRole>()
+			.AddEntityFrameworkStores<AppDbContext>();
 
 			return services;
 		}
