@@ -7,22 +7,24 @@ import {
   getActivityById,
 } from "../api/services";
 import { useLocation } from "react-router";
+import { useAccount } from "./useAccount";
 
 export function useActivities(id?: string) {
   const queryClient = useQueryClient();
   const location = useLocation();
+  const { currentUser } = useAccount();
 
-  const { data: activities, isPending } = useQuery({
+  const { data: activities, isLoading } = useQuery({
     queryKey: ["activities"],
     queryFn: fetchActivities,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
-    enabled: location.pathname === "/activities" && !id, // Only run this query if on the home page
+    enabled: location.pathname === "/activities" && !id && !!currentUser, // Only run this query if on the home page
   });
 
   const { data: activity, isLoading: isLoadingActivity } = useQuery({
     queryKey: ["activities", id],
     queryFn: () => getActivityById(id!),
-    enabled: !!id, // Only run this query if id is defined
+    enabled: !!id && !!currentUser, // Only run this query if id is defined
   });
 
   const updateActivity = useMutation({
@@ -48,7 +50,7 @@ export function useActivities(id?: string) {
 
   return {
     activities,
-    isPending,
+    isLoading,
     updateActivity,
     createActivity,
     deleteActivity,

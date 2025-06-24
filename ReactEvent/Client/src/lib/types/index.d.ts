@@ -11,6 +11,13 @@ declare type TActivity = {
   longitude: number;
 };
 
+declare type TUser = {
+  id: string;
+  email: string;
+  displayName: string;
+  imageUrl?: string;
+};
+
 declare type TLocationIQSuggestion = {
   place_id: string;
   osm_id: string;

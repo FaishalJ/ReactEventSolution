@@ -1,3 +1,5 @@
+import type { TLogin } from "../schemas/loginSchema";
+import type { TRegister } from "../schemas/registerSchema";
 import agent from "./agent";
 
 //========> GetActivities
@@ -25,4 +27,24 @@ export async function postActivity(activity: TActivity) {
 //========> DeleteActivities
 export async function removeActivity(id: string) {
   await agent.delete(`/activities/${id}`);
+}
+
+//========> Login
+export async function login(creds: TLogin) {
+  await agent.post("/login?useCookies=true", creds);
+}
+
+//========> Register
+export async function register(creds: TRegister) {
+  await agent.post("/account/register", creds);
+}
+//========> Login
+export async function logOut() {
+  await agent.post("/account/logout");
+}
+
+//========> Get user infor
+export async function getUser() {
+  const { data } = await agent.get<TUser>("/account/user-info");
+  return data;
 }
