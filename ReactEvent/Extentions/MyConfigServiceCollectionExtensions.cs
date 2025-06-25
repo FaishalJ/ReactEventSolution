@@ -1,8 +1,10 @@
 ﻿using Application.Activities.Queries;
 using Application.Activities.Validators;
 using Application.Core;
+using Application.Interfaces;
 using Domain;
 using FluentValidation;
+using Infrastructure;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -36,6 +38,7 @@ namespace ReactEvent.Extentions
 				cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
 			});
 
+			services.AddScoped<IUserAccessor, UserAccessor>();
 			services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 			services.AddValidatorsFromAssemblyContaining<CreateActivityValidator>();
 			services.AddTransient<ExceptionMiddleware>();

@@ -2,7 +2,6 @@
 using Application.Activities.DTO;
 using Application.Activities.Queries;
 using Domain;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ReactEvent.Controllers
@@ -10,13 +9,13 @@ namespace ReactEvent.Controllers
 	public class ActivitiesController() : BaseApiController
 	{
 		[HttpGet]
-		public async Task<ActionResult<List<Activity>>> GetActivities()
+		public async Task<ActionResult<List<ActivityDto>>> GetActivities()
 		{
 			return await Mediator.Send(new GetActivityList.Query());
 		}
 
 		[HttpGet("{id}")]
-		public async Task<ActionResult<Activity>> GetActivity(string id)
+		public async Task<ActionResult<ActivityDto>> GetActivity(string id)
 		{
 			return HandleResult(await Mediator.Send(new ActivityDetails.Query { Id = id }));
 
