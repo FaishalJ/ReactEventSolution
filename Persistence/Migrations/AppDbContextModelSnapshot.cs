@@ -61,7 +61,7 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Activities");
+                    b.ToTable("Activities", (string)null);
                 });
 
             modelBuilder.Entity("Domain.ActivityAttendee", b =>
@@ -82,7 +82,7 @@ namespace Persistence.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ActivityAttendees");
+                    b.ToTable("ActivityAttendees", (string)null);
                 });
 
             modelBuilder.Entity("Domain.User", b =>

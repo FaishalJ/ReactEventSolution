@@ -10,7 +10,7 @@ using ReactEvent.Middleware;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAuthorization();
+//builder.Services.AddAuthorization();
 
 builder.Services.AddControllers(opt =>
 {

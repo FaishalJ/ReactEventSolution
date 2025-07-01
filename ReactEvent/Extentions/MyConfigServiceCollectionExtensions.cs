@@ -4,8 +4,9 @@ using Application.Core;
 using Application.Interfaces;
 using Domain;
 using FluentValidation;
-using Infrastructure;
+using Infrastructure.Security;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
@@ -48,6 +49,14 @@ namespace ReactEvent.Extentions
 				opt.User.RequireUniqueEmail = true;
 			}).AddRoles<IdentityRole>()
 			.AddEntityFrameworkStores<AppDbContext>();
+
+			services.AddAuthorizationBuilder()
+				.AddPolicy("IsActivityHost", policy =>
+				{
+					policy.Requirements.Add(new IsHostRequirement());
+				});
+
+			services.AddTransient<IAuthorizationHandler, IsHostRequirementHandler>();
 
 			return services;
 		}

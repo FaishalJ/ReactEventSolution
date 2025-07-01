@@ -19,12 +19,30 @@ export function useActivities(id?: string) {
     queryFn: fetchActivities,
     staleTime: 1000 * 60 * 5, // Cache for 5 minutes
     enabled: location.pathname === "/activities" && !id && !!currentUser, // Only run this query if on the home page
+    select: (data) => {
+      return data.map((activity) => ({
+        ...activity,
+        isHost: activity.hostId === currentUser?.id,
+        isGoing: activity.attendees.some(
+          (attendee) => attendee.id === currentUser?.id
+        ),
+      }));
+    },
   });
 
   const { data: activity, isLoading: isLoadingActivity } = useQuery({
     queryKey: ["activities", id],
     queryFn: () => getActivityById(id!),
     enabled: !!id && !!currentUser, // Only run this query if id is defined
+    select: (data) => {
+      return {
+        ...data,
+        isHost: data.hostId === currentUser?.id,
+        isGoing: data.attendees.some(
+          (attendee) => attendee.id === currentUser?.id
+        ),
+      };
+    },
   });
 
   const updateActivity = useMutation({

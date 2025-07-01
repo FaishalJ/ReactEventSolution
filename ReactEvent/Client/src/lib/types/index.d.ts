@@ -9,6 +9,18 @@ declare type TActivity = {
   venue: string;
   latitude: number;
   longitude: number;
+  attendees: TProfile[];
+  isGoing: boolean;
+  isHost: boolean;
+  hostId: string;
+  hostDisplayName: string;
+};
+
+declare type TProfile = {
+  id: string;
+  displayName: string;
+  bio?: string;
+  imageUrl?: string;
 };
 
 declare type TUser = {
