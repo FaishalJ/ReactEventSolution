@@ -48,3 +48,8 @@ export async function getUser() {
   const { data } = await agent.get<TUser>("/account/user-info");
   return data;
 }
+
+//========> UpdateAttendance
+export async function editAttendance(activityId: string) {
+  await agent.post(`/activities/${activityId}/attend`);
+}

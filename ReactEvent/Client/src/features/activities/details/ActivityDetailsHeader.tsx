@@ -1,12 +1,14 @@
-import { Card, Badge, CardMedia, Box, Typography, Button } from "@mui/material";
+import { Card, Badge, CardMedia, Box, Typography } from "@mui/material";
 import { Link } from "react-router";
 import { formatDate } from "../../../lib/utils";
+import { useActivities } from "../../../lib/hooks/useActivities";
+import StyledButton from "../../../app/shared/components/StyledButton";
 
 interface Props {
   activity: TActivity;
 }
 export default function ActivityDetailsHeader({ activity }: Props) {
-  const loading = false;
+  const { updateAttendance } = useActivities(activity.id);
 
   return (
     <Card
@@ -69,16 +71,19 @@ export default function ActivityDetailsHeader({ activity }: Props) {
         <Box sx={{ display: "flex", gap: 2 }}>
           {activity.isHost ? (
             <>
-              <Button
+              <StyledButton
                 variant="contained"
                 color={activity.isCancelled ? "success" : "error"}
-                onClick={() => {}}
+                onClick={() => {
+                  updateAttendance.mutate(activity.id);
+                }}
+                disabled={updateAttendance.isPending}
               >
                 {activity.isCancelled
                   ? "Re-activate Activity"
                   : "Cancel Activity"}
-              </Button>
-              <Button
+              </StyledButton>
+              <StyledButton
                 variant="contained"
                 color="primary"
                 component={Link}
@@ -86,17 +91,19 @@ export default function ActivityDetailsHeader({ activity }: Props) {
                 disabled={activity.isCancelled}
               >
                 Manage Event
-              </Button>
+              </StyledButton>
             </>
           ) : (
-            <Button
+            <StyledButton
               variant="contained"
               color={activity.isGoing ? "primary" : "info"}
-              onClick={() => {}}
-              disabled={loading}
+              onClick={() => {
+                updateAttendance.mutate(activity.id);
+              }}
+              disabled={updateAttendance.isPending || activity.isCancelled}
             >
               {activity.isGoing ? "Cancel Attendance" : "Join Activity"}
-            </Button>
+            </StyledButton>
           )}
         </Box>
       </Box>

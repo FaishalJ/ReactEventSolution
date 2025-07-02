@@ -34,7 +34,7 @@ export default function ActivityDetailsSideBar({ activity }: Props) {
 
       <Paper sx={{ padding: 2 }}>
         {activity.attendees.map((attendee) => (
-          <Grid container alignItems="center">
+          <Grid container alignItems="center" key={attendee.id}>
             <Grid size={8}>
               <List sx={{ display: "flex", flexDirection: "column" }}>
                 <ListItem>

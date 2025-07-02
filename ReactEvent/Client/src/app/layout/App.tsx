@@ -1,11 +1,12 @@
 import { Box, Container, CssBaseline } from "@mui/material";
 import NavBar from "./NavBar";
-import { Outlet } from "react-router";
+import { Outlet, ScrollRestoration } from "react-router";
 
 function App() {
   return (
     <Box sx={{ bgcolor: "#eeeeee", minHeight: "100vh" }}>
       <CssBaseline />
+      <ScrollRestoration />
       <NavBar />
       <Container maxWidth="xl" sx={{ mt: 3 }}>
         <Outlet />
