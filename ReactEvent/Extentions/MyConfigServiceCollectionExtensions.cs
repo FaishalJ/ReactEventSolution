@@ -4,6 +4,7 @@ using Application.Core;
 using Application.Interfaces;
 using Domain;
 using FluentValidation;
+using Infrastructure.Photos;
 using Infrastructure.Security;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Persistence;
 using ReactEvent.Middleware;
 
-namespace ReactEvent.Extentions
+namespace ReactEvent.Extensions
 {
 	public static class MyConfigServiceCollectionExtensions
 	{
@@ -23,6 +24,8 @@ namespace ReactEvent.Extentions
 			{
 				options.UseSqlServer(config.GetConnectionString("DefaultConnection"));
 			});
+
+			services.Configure<CloudinarySettings>(config.GetSection(CloudinarySettings.Cloudinary));
 
 			services.AddCors(options =>
 			{

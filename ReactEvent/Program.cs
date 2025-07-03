@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Persistence;
-using ReactEvent.Extentions;
+using ReactEvent.Extensions;
 using ReactEvent.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
